@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Pedidos · Tela da TV</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #ffffff;
+      color: #1c1917;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    main {
+      min-height: 100vh;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      padding: clamp(12px, 2vw, 30px);
+    }
+
+    header,
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      color: #57534e;
+    }
+
+    header {
+      font-size: clamp(15px, 2vw, 24px);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    #clock {
+      font-variant-numeric: tabular-nums;
+    }
+
+    #orders-grid {
+      min-height: 0;
+      display: grid;
+      gap: clamp(8px, 1.2vw, 18px);
+    }
+
+    .grid-3x3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-4x3 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-4x4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(4, minmax(0, 1fr));
+    }
+
+    .order-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 8px;
+      border: 2px solid #d6d3d1;
+      background: #fff;
+      text-align: center;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    .order-topline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      gap: 4px;
+      align-items: start;
+    }
+
+    .order-primary {
+      min-width: 0;
+    }
+
+    .order-primary-label {
+      display: block;
+      margin-bottom: 2px;
+      color: #57534e;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .order-primary-value {
+      display: -webkit-box;
+      overflow: hidden;
+      color: #1c1917;
+      font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+      font-weight: 800;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+      text-transform: uppercase;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+
+    .order-middle {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 4px 0;
+    }
+
+    .order-detail {
+      overflow: hidden;
+      color: #57534e;
+      font-size: 0.75rem;
+      line-height: 1.1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .order-pickup {
+      color: #1c1917;
+      font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .order-countdown {
+      color: #2563eb;
+      font-size: clamp(0.85rem, 1.2vw, 1rem);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .order-type {
+      border: 1px solid #a8a29e;
+      padding: 2px 8px;
+      color: #44403c;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 4px;
+    }
+
+    .alert-card {
+      border-color: #FF0000;
+      animation: alert-flash 1s steps(2, start) infinite;
+    }
+
+    .alert-card .order-primary-value,
+    .alert-card .order-countdown {
+      color: #FF0000;
+    }
+
+    @keyframes alert-flash {
+
+      0%,
+      49% {
+        background: #fff;
+      }
+
+      50%,
+      100% {
+        background: #ffd6d6;
+      }
+    }
+
+    #empty {
+      align-self: center;
+      justify-self: center;
+      color: #57534e;
+      font-size: clamp(24px, 4vw, 56px);
+    }
+
+    footer {
+      min-height: 20px;
+      color: #57534e;
+      font-size: clamp(12px, 1.2vw, 16px);
+    }
+
+    @media (max-width: 700px) {
+      .order-card {
+        gap: 5px;
+        padding: 7px;
+      }
+
+      .order-primary-value {
+        font-size: 0.9rem;
+      }
+
+      .order-primary-label {
+        font-size: 0.6rem;
+      }
+
+      .order-detail {
+        font-size: 0.7rem;
+      }
+
+      .order-pickup {
+        font-size: 1rem;
+      }
+
+      .order-countdown {
+        font-size: 0.8rem;
+      }
+
+      .order-type {
+        padding: 2px 6px;
+        font-size: 0.65rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .alert-card {
+        animation-duration: 3s;
+      }
+    }
+  </style>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+
+<body>
+  <main>
+    <header><span>Açougue · Pedidos pendentes</span><time id="clock"></time></header>
+    <section id="orders-grid" aria-live="polite"></section>
+    <section id="empty" aria-live="polite">Nenhum pedido pendente</section>
+    <footer><span id="order-summary"></span><span id="position"></span></footer>
+  </main>
+  <script src="{{ url_for('static', filename='pedidos_tv/tv.js') }}?v=4" defer></script>
+</body>
+
+</html>

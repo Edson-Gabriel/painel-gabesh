@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Política de Privacidade | GabeSH.dev{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-4xl px-5 py-16 sm:py-24 lg:px-8">
+    <div class="mb-10 border-b border-line pb-8">
+        <a href="{{ url_for('index') }}" class="text-sm font-medium text-blue-500 hover:underline">← Voltar ao site</a>
+        <h1 class="mt-6 text-3xl font-bold tracking-tight sm:text-4xl">Política de Privacidade</h1>
+        <p class="mt-3 text-slate-400">Última atualização: Outubro de 2026</p>
+    </div>
+
+    <div class="space-y-8 text-slate-300">
+        <p>
+            Na <strong>GabeSH.dev</strong>, a privacidade e a segurança dos seus dados são tratadas com total
+            prioridade.
+            Esta política foi elaborada de forma transparente e objetiva para explicar como coletamos, usamos e
+            protegemos
+            as suas informações em conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD).
+        </p>
+
+        <div>
+            <h2 class="text-xl font-bold text-white">1. Dados que coletamos</h2>
+            <p class="mt-3 leading-7 text-slate-400">
+                Ao preencher o nosso formulário de orçamento, aplicamos o princípio da minimização, solicitando
+                apenas o estritamente necessário para conseguir atendê-lo:
+            </p>
+            <ul class="mt-3 list-inside list-disc space-y-2 text-sm text-slate-400">
+                <li>Nome ou Razão Social</li>
+                <li>E-mail</li>
+                <li>WhatsApp</li>
+                <li>Detalhes sobre o projeto solicitado</li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-bold text-white">2. Finalidade do uso (Por que precisamos deles?)</h2>
+            <p class="mt-3 leading-7 text-slate-400">
+                A coleta destes dados ocorre sob a base legal da <strong>diligência pré-contratual</strong>. Utilizamos
+                o seu contato exclusivamente para:
+            </p>
+            <ul class="mt-3 list-inside list-disc space-y-2 text-sm text-slate-400">
+                <li>Retornar a sua mensagem com propostas e orçamentos comerciais.</li>
+                <li>Esclarecer dúvidas técnicas a respeito dos sistemas ou automações solicitadas.</li>
+            </ul>
+            <p class="mt-4 rounded-xl bg-blue-500/10 p-4 text-sm font-medium text-sky-200">
+                Nós <strong>não</strong> utilizamos o seu WhatsApp ou E-mail para enviar mensagens de publicidade, spam,
+                ofertas não solicitadas ou mensagens diárias não relacionadas ao seu projeto.
+            </p>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-bold text-white">3. Compartilhamento e Segurança</h2>
+            <p class="mt-3 leading-7 text-slate-400">
+                Os seus dados são armazenados de forma criptografada em nossa base de dados privada. A GabeSH.dev
+                <strong>nunca venderá, alugará ou compartilhará</strong> as suas informações de contato com nenhuma
+                empresa, parceiro ou banco de dados externo.
+            </p>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-bold text-white">4. Seus Direitos</h2>
+            <p class="mt-3 leading-7 text-slate-400">
+                Você possui total controle sobre as informações fornecidas. A qualquer instante, você pode exigir:
+            </p>
+            <ul class="mt-3 list-inside list-disc space-y-2 text-sm text-slate-400">
+                <li>A exibição de quais dados seus estão em nosso banco.</li>
+                <li>A correção de qualquer contato ou nome desatualizado.</li>
+                <li>A <strong>exclusão definitiva</strong> das suas informações dos nossos servidores ("Direito ao
+                    esquecimento").</li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-bold text-white">5. Como entrar em contato</h2>
+            <p class="mt-3 leading-7 text-slate-400">
+                Para exercer o seu direito de exclusão ou tirar qualquer dúvida relacionada a esta política,
+                basta nos responder no mesmo canal de WhatsApp ou E-mail em que o nosso atendimento for iniciado.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

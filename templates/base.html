@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <title>{% block title %}GabeSH.dev | Sistemas & Automações{% endblock %}</title>
+  <script>
+    try {
+      if (localStorage.getItem("gabesh-theme") === "light") {
+        document.documentElement.classList.add("theme-light");
+      }
+    } catch (error) {
+      console.warn("Não foi possível carregar a preferência de tema.", error);
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#07111f", panel: "#0d1b2d", line: "#1d3552", electric: "#39a7ff"
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
+</head>
+
+<body class="min-h-full bg-ink text-slate-100 antialiased selection:bg-electric/30">
+  <header class="sticky top-0 z-30 border-b border-white/5 bg-ink/90 backdrop-blur">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 lg:px-8"
+      aria-label="Navegação principal">
+      <a href="{{ url_for('index') }}" class="text-lg font-extrabold tracking-tight">GabeSH<span
+          class="text-electric">.dev</span><span
+          class="ml-2 hidden text-xs font-medium text-slate-400 sm:inline">Sistemas & Automações</span></a>
+      <button id="nav-toggle" type="button" class="rounded-lg border border-line px-3 py-2 text-sm md:hidden"
+        aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <div id="nav-links" class="hidden items-center gap-6 text-sm text-slate-300 md:flex">
+        {% if current_user.is_authenticated %}
+        {% if current_user.role == "admin" %}<a href="{{ url_for('admin') }}" class="hover:text-white">Painel
+          master</a>{% else %}<a href="{{ url_for('portal') }}" class="hover:text-white">Meu portal</a>{% endif %}
+        <span class="hidden text-slate-500 sm:inline">{{ current_user.nome_ou_razao }}</span>
+        <form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="csrf_token"
+            value="{{ csrf_token() }}"><button
+            class="rounded-lg border border-line px-4 py-2 hover:border-electric hover:text-white">Sair</button></form>
+        {% else %}
+        <a href="{{ url_for('index') }}#solucoes" class="hover:text-white">Soluções</a>
+        <a href="{{ url_for('index') }}#contato" class="hover:text-white">Contato</a>
+        <a href="{{ url_for('login') }}"
+          class="rounded-lg border border-line px-4 py-2 hover:border-electric hover:text-white">Área do cliente</a>
+        {% endif %}
+      </div>
+      <button id="theme-toggle" type="button"
+        class="inline-flex shrink-0 items-center gap-2 rounded-lg border border-line px-3 py-2 text-sm font-medium transition hover:border-electric"
+        aria-label="Alternar tema claro e escuro" aria-pressed="false">
+        <span id="theme-icon" aria-hidden="true">☀</span><span id="theme-label" class="hidden sm:inline">Tema
+          claro</span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+    {% if mensagens %}
+    <div class="mx-auto max-w-7xl space-y-2 px-5 pt-5 lg:px-8" aria-live="polite">
+      {% for categoria, mensagem in mensagens %}
+      <div
+        class="flash-message rounded-xl border px-4 py-3 text-sm {% if categoria == 'error' %}border-rose-500/30 bg-rose-500/10 text-rose-200{% elif categoria == 'success' %}border-emerald-500/30 bg-emerald-500/10 text-emerald-200{% else %}border-sky-500/30 bg-sky-500/10 text-sky-200{% endif %}">
+        {{ mensagem }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-white/5 px-5 py-7 text-center text-sm text-slate-500">
+    <p>© {{ current_year }} GabeSH.dev · Software sob medida para negócios que evoluem.</p>
+  </footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+  <script>
+    // Busca automática do endereço a partir do CEP informado no cadastro de clientes e usuários.
+    function buscarCEP(input) {
+      const cep = input.value.replace(/\D/g, '');
+
+      // A consulta só é disparada quando o CEP completo está preenchido.
+      if (cep.length === 8) {
+        const form = input.closest('form');
+
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+          .then(resposta => resposta.json())
+          .then(dados => {
+            if (!dados.erro) {
+              form.querySelector('[name="rua"]').value = dados.logradouro;
+              form.querySelector('[name="bairro"]').value = dados.bairro;
+              form.querySelector('[name="cidade"]').value = dados.localidade;
+              form.querySelector('[name="estado"]').value = dados.uf;
+              form.querySelector('[name="numero"]').focus();
+            } else {
+              alert("O CEP digitado não foi encontrado.");
+            }
+          })
+          .catch(erro => console.error("Erro na busca de CEP:", erro));
+      }
+    }
+  </script>
+  <!-- Alterna a visibilidade do valor da senha em campos de formulário que usam a classe toggle-password. -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          const input = this.parentElement.querySelector('input');
+
+          if (input.type === 'password') {
+            input.type = 'text';
+            this.innerHTML = `<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>`;
+          } else {
+            input.type = 'password';
+            this.innerHTML = `<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</body>
+
+</html>

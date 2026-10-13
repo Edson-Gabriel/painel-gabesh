@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relatórios · Pedidos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+    }
+  </style>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+
+<body class="min-h-screen bg-stone-100 text-stone-900">
+<header class="bg-stone-950 text-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
+      <a href="{{ url_for('pedidos_tv.index') }}" class="text-lg font-bold">Açougue · Pedidos</a>
+      <nav class="flex items-center gap-5 text-sm">
+        <a href="{{ url_for('pedidos_tv.index') }}" class="text-stone-300 hover:text-white">Painel</a>
+        <a href="{{ url_for('pedidos_tv.cadastro') }}" class="text-stone-300 hover:text-white">Equipe</a>
+        <a href="{{ url_for('pedidos_tv.relatorios') }}" class="text-stone-300 hover:text-white">Relatórios</a>
+        <a href="{{ url_for('pedidos_tv.tv') }}" target="_blank" class="text-stone-300 hover:text-white">Ecrã da TV</a>
+      </nav>
+    </div>
+  </header>
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <div class="flex flex-wrap items-end justify-between gap-4 border-b border-stone-300 pb-5">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-emerald-800">Desempenho</p>
+        <h1 class="mt-1 text-2xl font-bold">Relatórios de pedidos</h1>
+      </div>
+      <form id="date-filter" class="flex flex-wrap items-end gap-3">
+        <label class="text-sm font-medium">De<input name="inicio" type="date" required
+            class="mt-1 block rounded border border-stone-300 bg-white px-3 py-2 font-normal"></label>
+        <label class="text-sm font-medium">Até<input name="fim" type="date" required
+            class="mt-1 block rounded border border-stone-300 bg-white px-3 py-2 font-normal"></label>
+        <button class="rounded bg-emerald-800 px-4 py-2 font-semibold text-white hover:bg-emerald-900">Aplicar</button>
+        <a id="export-pdf"
+          class="rounded border border-stone-400 bg-white px-4 py-2 font-semibold text-stone-800 hover:bg-stone-50"
+          download>Exportar PDF</a>
+        <a id="export-xlsx"
+          class="rounded border border-stone-400 bg-white px-4 py-2 font-semibold text-stone-800 hover:bg-stone-50"
+          download>Exportar XLSX</a>
+      </form>
+    </div>
+    <p id="report-message" role="status" class="mt-4 min-h-5 text-sm"></p>
+    <section class="mt-6 grid gap-px bg-stone-300 sm:grid-cols-3" aria-label="Resumo do período">
+      <div class="bg-white p-5">
+        <p class="text-sm text-stone-600">Pedidos concluídos</p>
+        <p id="total-orders" class="mt-1 text-3xl font-bold">0</p>
+      </div>
+      <div class="bg-white p-5">
+        <p class="text-sm text-stone-600">No prazo</p>
+        <p id="on-time-orders" class="mt-1 text-3xl font-bold text-emerald-800">0</p>
+      </div>
+      <div class="bg-white p-5">
+        <p class="text-sm text-stone-600">Atrasados</p>
+        <p id="late-orders" class="mt-1 text-3xl font-bold text-red-700">0</p>
+      </div>
+    </section>
+    <section class="mt-10">
+      <div class="flex items-end justify-between border-b border-stone-300 pb-3">
+        <h2 class="text-lg font-bold">Desempenho por açougueiro</h2><span class="text-xs text-stone-500">Concluídos no
+          período</span>
+      </div>
+      <div class="overflow-x-auto bg-white">
+        <table class="w-full min-w-[760px] text-left text-sm">
+          <thead class="bg-stone-200 text-xs uppercase text-stone-600">
+            <tr>
+              <th class="px-4 py-3">Açougueiro</th>
+              <th class="px-4 py-3">Total</th>
+              <th class="px-4 py-3">No prazo</th>
+              <th class="px-4 py-3">Atrasados</th>
+              <th class="px-4 py-3">Pedidos detalhados</th>
+            </tr>
+          </thead>
+          <tbody id="performance-rows" class="divide-y divide-stone-200"></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="mt-10">
+      <div class="flex items-end justify-between border-b border-stone-300 pb-3">
+        <h2 class="text-lg font-bold">Pedidos concluídos</h2><span class="text-xs text-stone-500">Filtrados pela data de
+          conclusão</span>
+      </div>
+      <div class="overflow-x-auto bg-white">
+        <table class="w-full min-w-[850px] text-left text-sm">
+          <thead class="bg-stone-200 text-xs uppercase text-stone-600">
+            <tr>
+              <th class="px-4 py-3">Pedido</th>
+              <th class="px-4 py-3">Cliente</th>
+              <th class="px-4 py-3">Retirada</th>
+              <th class="px-4 py-3">Açougueiro</th>
+              <th class="px-4 py-3">Atendente</th>
+              <th class="px-4 py-3">Conclusão</th>
+              <th class="px-4 py-3">Resultado</th>
+            </tr>
+          </thead>
+          <tbody id="completed-rows" class="divide-y divide-stone-200"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='pedidos_tv/relatorios.js') }}" defer></script>
+</body>
+
+</html>

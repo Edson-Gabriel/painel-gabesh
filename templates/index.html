@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}GabeSH.dev | Sistemas & Automações sob medida{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-7xl px-5 pb-16 pt-16 sm:pb-20 sm:pt-24 lg:px-8">
+  <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+    <div class="max-w-2xl">
+      <span
+        class="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-sky-200"><span
+          class="h-2 w-2 rounded-full bg-blue-500"></span> Software feito para o seu negócio</span>
+      <h1 class="mt-6 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">Sistemas e automações que <span
+          class="text-blue-500">simplificam seu dia a dia.</span></h1>
+      <p class="mt-5 max-w-xl text-lg leading-8 text-slate-300">Criamos soluções web sob medida para pessoas e empresas:
+        menos tarefas manuais, mais controle e espaço para crescer.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#contato"
+          class="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-500">Conte
+          sua ideia <span aria-hidden="true">→</span></a>
+        <a href="#solucoes"
+          class="rounded-xl border border-line px-5 py-3 font-semibold transition hover:border-blue-400 hover:text-blue-500">Conheça
+          as soluções</a>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400"><span>✓ Feito sob medida</span><span>✓
+          Acesso pela web</span><span>✓ Atendimento direto</span></div>
+    </div>
+    <aside class="rounded-2xl border border-line bg-panel p-6 sm:p-8">
+      <p class="text-sm font-semibold text-blue-500">Como funciona</p>
+      <h2 class="mt-2 text-2xl font-bold">Do desafio à solução.</h2>
+      <ol class="mt-6 space-y-5">
+        {% for numero, titulo, texto in [("01", "Entendemos sua operação", "Alinhamos necessidades, objetivos e
+        prioridades."), ("02", "Desenvolvemos sua solução", "Construímos e validamos o sistema junto com você."), ("03",
+        "Apoiamos sua evolução", "Sua solução acompanha as mudanças do negócio.")] %}
+        <li class="flex gap-4"><span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 font-mono text-sm font-semibold text-sky-300">{{
+            numero }}</span>
+          <div>
+            <h3 class="font-semibold">{{ titulo }}</h3>
+            <p class="mt-1 text-sm leading-6 text-slate-400">{{ texto }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<section id="solucoes" class="border-y border-white/5 bg-[#091626] py-16 sm:py-20">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="max-w-2xl">
+      <p class="text-sm font-semibold text-blue-500">O que desenvolvemos</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Tecnologia para resolver problemas reais.</h2>
+      <p class="mt-3 leading-7 text-slate-400">Soluções personalizadas para organizar processos, conectar ferramentas e
+        facilitar a rotina.</p>
+    </div>
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {% for icone, titulo, texto in [("▣", "Pedidos TV", "Painéis de pedidos para acompanhar a operação."), ("⌘",
+      "ERPs", "Gestão integrada aos processos da sua empresa."), ("◎", "CRMs", "Relacionamento e acompanhamento de
+      clientes."), ("↗", "APIs & automações", "Integrações que reduzem tarefas repetitivas.")] %}
+      <article class="rounded-xl border border-line bg-panel p-5 transition hover:border-blue-500/50"><span
+          class="text-xl text-blue-500">{{ icone }}</span>
+        <h3 class="mt-4 font-semibold">{{ titulo }}</h3>
+        <p class="mt-2 text-sm leading-6 text-slate-400">{{ texto }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="contato" class="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:py-20 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+  <div class="max-w-md">
+    <p class="text-sm font-semibold text-blue-500">Vamos conversar</p>
+    <h2 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Conte o que você precisa.</h2>
+    <p class="mt-4 leading-7 text-slate-400">Compartilhe sua ideia. Vamos entender o cenário e conversar sobre uma
+      solução, sem compromisso.</p>
+    <div class="mt-6 rounded-xl border border-line bg-panel p-5">
+      <p class="font-semibold">Atendimento para PF e PJ</p>
+      <p class="mt-2 text-sm leading-6 text-slate-400">O pedido será salvo e encaminhado pelo WhatsApp para a equipe
+        GabeSH.dev.</p>
+    </div>
+  </div>
+  <form method="post" action="{{ url_for('index') }}#contato"
+    class="rounded-2xl border border-line bg-panel p-5 sm:p-7">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="grid gap-4 sm:grid-cols-2">
+      <label class="text-sm font-medium text-slate-300 sm:col-span-2">Nome / Razão social<input required maxlength="160"
+          name="nome" value="{{ dados.nome if dados else '' }}" autocomplete="name"
+          class="mt-2 w-full rounded-lg border border-line bg-ink px-3.5 py-3 text-white outline-none focus:border-blue-500"
+          placeholder="Seu nome"></label>
+
+      <label class="text-sm font-medium text-slate-300">E-mail<input required type="email" maxlength="254" name="email"
+          value="{{ dados.email if dados else '' }}" autocomplete="email"
+          class="mt-2 w-full rounded-lg border border-line bg-ink px-3.5 py-3 text-white outline-none focus:border-blue-500"
+          placeholder="voce@empresa.com"></label>
+      <label class="text-sm font-medium text-slate-300">WhatsApp<input required maxlength="32" name="whatsapp"
+          value="{{ dados.whatsapp if dados else '' }}" autocomplete="tel"
+          class="mt-2 w-full rounded-lg border border-line bg-ink px-3.5 py-3 text-white outline-none focus:border-blue-500"
+          placeholder="(00) 00000-0000"></label>
+
+      <label class="text-sm font-medium text-slate-300">Tipo de cliente
+        <select required name="tipo_cliente"
+          class="mt-2 w-full rounded-lg border border-line bg-ink px-3.5 py-3 text-white outline-none focus:border-blue-500">
+          <option value="">Selecione</option>
+          <option value="PF" {% if dados and dados.tipo_cliente=='PF' %}selected{% endif %}>Pessoa Física</option>
+          <option value="PJ" {% if dados and dados.tipo_cliente=='PJ' %}selected{% endif %}>Pessoa Jurídica</option>
+        </select>
+      </label>
+
+      <label class="text-sm font-medium text-slate-300">Solução de interesse
+        <select required name="tipo_solucao"
+          class="mt-2 w-full rounded-lg border border-line bg-ink px-3.5 py-3 text-white outline-none focus:border-blue-500">
+          <option value="">Selecione</option>
+          <option {% if dados and dados.tipo_solucao=='Sistema Web' %}selected{% endif %}>Sistema Web</option>
+          <option {% if dados and dados.tipo_solucao=='App' %}selected{% endif %}>App</option>
+          <option {% if dados and dados.tipo_solucao=='Automação' %}selected{% endif %}>Automação</option>
+          <option {% if dados and dados.tipo_solucao=='Outra' %}selected{% endif %}>Outra</option>
+        </select>
+      </label>
+
+      <label class="text-sm font-medium text-slate-300 sm:col-span-2">Conte sobre seu projeto<textarea required
+          maxlength="5000" rows="4" name="descricao_projeto"
+          class="mt-2 w-full rounded-lg border border-line bg-ink px-3.5 py-3 text-white outline-none focus:border-blue-500"
+          placeholder="Qual desafio você quer resolver?">{{ dados.descricao_projeto if dados else '' }}</textarea></label>
+    </div>
+
+    <!-- Consentimento para uso dos dados do formulário, necessário para a prospecção comercial e atendimento. -->
+    <div class="mt-6 flex items-start gap-3 rounded-lg border border-white/5 bg-ink p-4">
+      <input type="checkbox" required id="lgpd_consent" name="lgpd_consent" {% if dados and dados.lgpd_consent
+        %}checked{% endif %}
+        class="mt-0.5 h-4 w-4 shrink-0 rounded border-line bg-panel text-blue-600 focus:ring-blue-500">
+      <label for="lgpd_consent" class="text-xs leading-5 text-slate-400">
+        Concordo com a coleta dos meus dados (Nome, E-mail e WhatsApp) para fins de elaboração de orçamento e contato
+        comercial, nos termos da nossa
+        <a href="{{ url_for('privacidade') }}" target="_blank"
+          class="font-medium text-blue-500 hover:underline">Política de Privacidade</a>.
+      </label>
+    </div>
+
+    <button type="submit"
+      class="mt-5 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-500">Enviar
+      solicitação</button>
+  </form>
+</section>
+
+{% if whatsapp_url %}
+<script>
+  window.open("{{ whatsapp_url|safe }}", "_blank");
+</script>
+{% endif %}
+
+{% endblock %}

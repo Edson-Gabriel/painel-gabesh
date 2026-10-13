@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+{% block title %}Painel master | GabeSH.dev{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+  <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-[0.18em] text-sky-400">Administração</p>
+      <h1 class="mt-2 text-3xl font-bold sm:text-4xl">Painel master</h1>
+      <p class="mt-2 text-slate-400">Visão geral de leads, clientes e soluções.</p>
+    </div>
+    <span
+      class="w-fit rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-200">Acesso
+      administrativo</span>
+  </div>
+  <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <article class="rounded-2xl border border-line bg-panel p-5">
+      <p class="text-sm text-slate-400">Faturamento estimado</p>
+      <p class="mt-3 text-2xl font-bold text-slate-300">Indisponível</p>
+      <p class="mt-2 text-xs text-slate-500">Sem dados financeiros cadastrados</p>
+    </article>
+    <article class="rounded-2xl border border-line bg-panel p-5">
+      <p class="text-sm text-slate-400">Leads pendentes</p>
+      <p class="mt-3 text-3xl font-bold">{{ metricas.leads_pendentes }}</p><a href="#leads"
+        class="mt-2 inline-block text-xs text-sky-300 hover:text-white">Ver solicitações →</a>
+    </article>
+    <article class="rounded-2xl border border-line bg-panel p-5">
+      <p class="text-sm text-slate-400">Clientes PF</p>
+      <p class="mt-3 text-3xl font-bold">{{ metricas.clientes_pf }}</p>
+    </article>
+    <article class="rounded-2xl border border-line bg-panel p-5">
+      <p class="text-sm text-slate-400">Clientes PJ</p>
+      <p class="mt-3 text-3xl font-bold">{{ metricas.clientes_pj }}</p>
+    </article>
+    <article class="rounded-2xl border border-line bg-panel p-5">
+      <p class="text-sm text-slate-400">Projetos ativos</p>
+      <p class="mt-3 text-3xl font-bold">{{ metricas.projetos_ativos }}</p>
+    </article>
+  </div>
+
+  <section id="leads" class="mt-12 scroll-mt-8">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-sky-400">Captação</p>
+        <h2 class="mt-2 text-2xl font-bold">Leads recebidos</h2>
+      </div><span class="text-sm text-slate-500">{{ leads|length }} registro(s)</span>
+    </div>
+    <form method="get" action="{{ url_for('admin') }}#leads"
+      class="mt-5 flex flex-wrap items-end gap-3 rounded-2xl border border-line bg-panel p-4">
+      <label class="text-xs font-medium text-slate-400">Solução<select name="tipo_solucao"
+          class="mt-1 block rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white">
+          <option value="">Todas</option>{% for tipo in tipos_solucao %}<option value="{{ tipo }}" {% if
+            filtro_solucao==tipo %}selected{% endif %}>{{ tipo }}</option>{% endfor %}
+        </select></label>
+      <label class="text-xs font-medium text-slate-400">Status<select name="status_lead"
+          class="mt-1 block rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white">
+          <option value="">Todos</option>{% for status in status_lead %}<option value="{{ status }}" {% if
+            filtro_status_lead==status %}selected{% endif %}>{{ status }}</option>{% endfor %}
+        </select></label>
+      <button class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold hover:bg-blue-400">Filtrar leads</button><a
+        href="{{ url_for('admin') }}#leads" class="px-2 py-2 text-sm text-slate-400 hover:text-white">Limpar</a>
+    </form>
+    <div class="mt-4 overflow-x-auto rounded-2xl border border-line bg-panel">
+      <table class="w-full min-w-[850px] text-left text-sm">
+        <thead class="border-b border-line bg-white/[0.02] text-xs uppercase tracking-wide text-slate-500">
+          <tr>
+            <th class="px-5 py-4">Contato</th>
+            <th class="px-5 py-4">Perfil</th>
+            <th class="px-5 py-4">Solução</th>
+            <th class="px-5 py-4">Projeto</th>
+            <th class="px-5 py-4">Recebido</th>
+            <th class="px-5 py-4">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          {% for lead in leads %}
+          <tr class="align-top">
+            <td class="px-5 py-4">
+              <p class="font-semibold text-white">{{ lead.nome }}</p>
+              <p class="mt-1 text-xs text-slate-400">{{ lead.email }}</p>
+              <p class="text-xs text-slate-500">{{ lead.whatsapp }}</p>
+            </td>
+            <td class="px-5 py-4"><span class="rounded-full bg-slate-700/60 px-2.5 py-1 text-xs">{{ lead.tipo_cliente
+                }}</span>
+              <p class="mt-2 text-xs text-slate-500">{{ lead.documento }}</p>
+            </td>
+            <td class="px-5 py-4"><span class="rounded-full bg-blue-500/10 px-2.5 py-1 text-xs text-sky-200">{{
+                lead.tipo_solucao }}</span></td>
+            <td class="max-w-xs px-5 py-4 text-slate-300">{{ lead.descricao_projeto }}</td>
+            <td class="whitespace-nowrap px-5 py-4 text-slate-400">{{ lead.data_criacao.strftime("%d/%m/%Y %H:%M") }}
+            </td>
+            <td class="px-5 py-4">
+              <div class="flex items-center gap-3">
+                <!-- Atualização de status do lead em linha, sem exigir navegação para outra tela. -->
+                <form action="{{ url_for('atualizar_lead', lead_id=lead.id) }}" method="post"
+                  class="flex items-center gap-2">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <select name="status" aria-label="Status do lead"
+                    class="rounded-lg border border-line bg-ink px-2 py-2 text-xs">
+                    {% for status in status_lead %}
+                    <option {% if lead.status==status %}selected{% endif %}>{{ status }}</option>
+                    {% endfor %}
+                  </select>
+                  <button
+                    class="rounded-lg border border-line px-2.5 py-2 text-xs hover:border-electric">Salvar</button>
+                </form>
+
+                <!-- Ação de remoção permanente do lead, alinhada à política de privacidade e exclusão de dados. -->
+                <form action="{{ url_for('excluir_lead', lead_id=lead.id) }}" method="post"
+                  onsubmit="return confirm('Tem certeza que deseja apagar este lead? A ação não pode ser revertida.');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="text-rose-500/70 hover:text-rose-400" title="Excluir lead">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}<tr>
+            <td colspan="6" class="px-5 py-10 text-center text-slate-500">Nenhum lead encontrado.</td>
+          </tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="clientes" class="mt-14 scroll-mt-8">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-sky-400">Relacionamento</p>
+        <h2 class="mt-2 text-2xl font-bold">Clientes & soluções</h2>
+      </div><span class="text-sm text-slate-500">{{ usuarios|length }} cliente(s)</span>
+    </div>
+    <form method="get" action="{{ url_for('admin') }}#clientes"
+      class="mt-5 flex flex-wrap items-end gap-3 rounded-2xl border border-line bg-panel p-4">
+      <label class="text-xs font-medium text-slate-400">Tipo de cliente<select name="tipo_cliente"
+          class="mt-1 block rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white">
+          <option value="">Todos</option>{% for tipo in tipos_cliente %}<option value="{{ tipo }}" {% if
+            filtro_tipo==tipo %}selected{% endif %}>{{ tipo }}</option>{% endfor %}
+        </select></label>
+      <label class="text-xs font-medium text-slate-400">Sistema vinculado<select name="servico_id"
+          class="mt-1 block rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white">
+          <option value="">Todos</option>{% for servico in servicos %}<option value="{{ servico.id }}" {% if
+            filtro_servico==servico.id %}selected{% endif %}>{{ servico.nome_exibicao }}</option>{% endfor %}
+        </select></label>
+      <button class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold hover:bg-blue-400">Filtrar
+        clientes</button><a href="{{ url_for('admin') }}#clientes"
+        class="px-2 py-2 text-sm text-slate-400 hover:text-white">Limpar</a>
+    </form>
+
+    <details class="mt-4 rounded-2xl border border-line bg-panel">
+      <summary class="cursor-pointer list-none px-5 py-4 font-semibold hover:text-sky-300">＋ Cadastrar cliente</summary>
+      <form action="{{ url_for('criar_cliente') }}" method="post"
+        class="grid gap-4 border-t border-line p-5 sm:grid-cols-2 lg:grid-cols-3">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="col-span-full mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">Dados Principais &
+          Acesso</div>
+
+        <label class="text-xs font-medium text-slate-400">Nome / razão social<input required maxlength="160"
+            name="nome_ou_razao"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+        <label class="text-xs font-medium text-slate-400">E-mail<input required type="email" maxlength="254"
+            name="email"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+
+        <label class="text-xs font-medium text-slate-400">Senha inicial (mín. 12 caracteres)
+          <div class="relative mt-1">
+            <input required minlength="12" type="password" name="senha" autocomplete="new-password"
+              class="w-full rounded-lg border border-line bg-ink py-2.5 pl-3 pr-10 text-sm text-white outline-none focus:border-blue-500">
+            <button type="button"
+              class="toggle-password absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-white"
+              tabindex="-1">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+        </label>
+
+        <label class="text-xs font-medium text-slate-400">Tipo<select required name="tipo_cliente"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+            <option value="">Selecione</option>
+            <option value="PF">PF</option>
+            <option value="PJ">PJ</option>
+          </select></label>
+        <label class="text-xs font-medium text-slate-400">CPF / CNPJ<input required name="documento" inputmode="numeric"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+        <label class="text-xs font-medium text-slate-400">Telefone<input required name="telefone"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"
+            placeholder="(00) 00000-0000"></label>
+
+        <div class="col-span-full mt-2 mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">Endereço
+          (Obrigatório)</div>
+
+        <label class="text-xs font-medium text-slate-400">CEP<input required name="cep" onkeyup="buscarCEP(this)"
+            maxlength="9"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"
+            placeholder="00000-000"></label>
+        <label class="text-xs font-medium text-slate-400">Estado (UF)<input required name="estado" maxlength="2"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white uppercase focus:border-blue-500 outline-none"></label>
+        <label class="text-xs font-medium text-slate-400">Cidade<input required name="cidade"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+
+        <label class="text-xs font-medium text-slate-400">Bairro<input required name="bairro"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+        <label class="text-xs font-medium text-slate-400 lg:col-span-2">Rua<input required name="rua"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+
+        <label class="text-xs font-medium text-slate-400">Número<input required name="numero"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+        <label class="text-xs font-medium text-slate-400">Complemento<input name="complemento"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+        <label class="text-xs font-medium text-slate-400">Referência<input name="referencia"
+            class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none"></label>
+
+        <div class="col-span-full flex items-end justify-end mt-2 pt-2 border-t border-white/5">
+          <button
+            class="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 transition-colors">Criar
+            conta do cliente</button>
+        </div>
+      </form>
+    </details>
+
+    <div class="mt-4 space-y-3">
+      {% for usuario in usuarios %}
+      <article class="rounded-2xl border border-line bg-panel p-5">
+        <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="font-bold">{{ usuario.nome_ou_razao }}</h3><span
+                class="rounded-full bg-slate-700/60 px-2.5 py-1 text-xs">{{ usuario.tipo_cliente }}</span><span
+                class="rounded-full {% if usuario.ativo %}bg-emerald-500/10 text-emerald-200{% else %}bg-rose-500/10 text-rose-200{% endif %} px-2.5 py-1 text-xs">{%
+                if usuario.ativo %}Ativo{% else %}Desativado{% endif %}</span>
+            </div>
+            <p class="mt-1 text-sm text-slate-400">{{ usuario.email }} <span class="text-slate-600">·</span> {{
+              usuario.documento }}</p>
+          </div><span class="w-fit rounded-full bg-blue-500/10 px-3 py-1.5 text-xs text-sky-200">Projeto: {{
+            usuario.status_projeto }}</span>
+        </div>
+        <div class="mt-5 grid gap-5 border-t border-white/5 pt-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <form action="{{ url_for('editar_cliente', usuario_id=usuario.id) }}" method="post"
+            class="flex flex-wrap items-end gap-3">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label class="text-xs font-medium text-slate-400">Status do projeto<select name="status_projeto"
+                class="mt-1 block rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white">{% for status in
+                status_projeto %}<option {% if usuario.status_projeto==status %}selected{% endif %}>{{ status }}
+                </option>{% endfor %}</select></label>
+            <label class="flex items-center gap-2 pb-2 text-xs text-slate-300"><input type="checkbox" name="ativo" {% if
+                usuario.ativo %}checked{% endif %}
+                class="rounded border-line bg-ink text-blue-500 focus:ring-blue-500">Conta ativa</label>
+            <button class="rounded-lg border border-line px-3 py-2 text-sm hover:border-electric">Salvar</button>
+          </form>
+          <form action="{{ url_for('atualizar_servicos_cliente', usuario_id=usuario.id) }}" method="post"
+            class="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% for servico in servicos %}{% set ns = namespace(ativo=false) %}{% for vinculo in
+            usuario.servicos_vinculados %}{% if vinculo.servico_id == servico.id and vinculo.ativo %}{% set ns.ativo =
+            true %}{% endif %}{% endfor %}
+            <label class="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" name="servico_ids"
+                value="{{ servico.id }}" {% if ns.ativo %}checked{% endif %}
+                class="rounded border-line bg-ink text-blue-500 focus:ring-blue-500">{{ servico.nome_exibicao }}</label>
+            {% else %}<span class="text-xs text-slate-500">Cadastre um serviço para configurar acessos.</span>{% endfor
+            %}
+            {% if servicos %}<button
+              class="rounded-lg border border-line px-3 py-2 text-xs hover:border-electric">Atualizar acessos</button>{%
+            endif %}
+          </form>
+        </div>
+        <!-- Expansor para edição completa do cadastro do cliente, incluindo contato e endereço. -->
+        <details class="mt-5 border-t border-white/5 pt-4 group">
+          <summary
+            class="cursor-pointer text-xs font-semibold text-blue-500 hover:text-blue-400 list-none flex items-center gap-2">
+            <span class="group-open:rotate-90 transition-transform">▶</span> Editar Dados Cadastrais e Endereço
+          </summary>
+          <form action="{{ url_for('editar_dados_cliente', usuario_id=usuario.id) }}" method="post"
+            class="mt-5 grid gap-4 border-l-2 border-blue-500/30 pl-4 sm:grid-cols-2 lg:grid-cols-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="col-span-full mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">Contato
+              Obrigatório</div>
+            <label class="text-xs font-medium text-slate-400 sm:col-span-2">Nome / Razão social<input required
+                maxlength="160" name="nome_ou_razao" value="{{ usuario.nome_ou_razao }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+            <label class="text-xs font-medium text-slate-400">E-mail<input required type="email" name="email"
+                value="{{ usuario.email }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+            <label class="text-xs font-medium text-slate-400">Telefone<input required name="telefone"
+                value="{{ usuario.telefone or '' }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"
+                placeholder="(00) 00000-0000"></label>
+
+            <div class="col-span-full mt-2 mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">Endereço
+            </div>
+            <label class="text-xs font-medium text-slate-400">CEP<input required name="cep"
+                value="{{ usuario.cep or '' }}" onkeyup="buscarCEP(this)" maxlength="9"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"
+                placeholder="00000-000"></label>
+            <label class="text-xs font-medium text-slate-400">Estado (UF)<input required name="estado"
+                value="{{ usuario.estado or '' }}" maxlength="2"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white uppercase focus:border-blue-500 outline-none"></label>
+            <label class="text-xs font-medium text-slate-400 sm:col-span-2">Cidade<input required name="cidade"
+                value="{{ usuario.cidade or '' }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+
+            <label class="text-xs font-medium text-slate-400 sm:col-span-2">Bairro<input required name="bairro"
+                value="{{ usuario.bairro or '' }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+            <label class="text-xs font-medium text-slate-400 sm:col-span-2">Rua<input required name="rua"
+                value="{{ usuario.rua or '' }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+
+            <label class="text-xs font-medium text-slate-400">Número<input required name="numero"
+                value="{{ usuario.numero or '' }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+            <label class="text-xs font-medium text-slate-400 sm:col-span-1">Complemento<input name="complemento"
+                value="{{ usuario.complemento or '' }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+            <label class="text-xs font-medium text-slate-400 sm:col-span-2">Referência<input name="referencia"
+                value="{{ usuario.referencia or '' }}"
+                class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white focus:border-blue-500 outline-none"></label>
+
+            <div class="col-span-full flex justify-end mt-2">
+              <button
+                class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500">Salvar
+                Dados Cadastrais</button>
+            </div>
+          </form>
+        </details>
+        <!-- Separador visual para destacar a exclusão da conta do cliente conforme a LGPD. -->
+        <div class="mt-4 flex justify-end border-t border-rose-500/10 pt-4">
+          <form action="{{ url_for('excluir_cliente', usuario_id=usuario.id) }}" method="post"
+            onsubmit="return confirm('ATENÇÃO: Deseja apagar permanentemente todos os dados deste cliente? Esta ação removerá os acessos e é irreversível.');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="text-xs font-semibold text-rose-500 hover:text-rose-400">Excluir dados do cliente
+              (LGPD)</button>
+          </form>
+        </div>
+      </article>
+      {% else %}<div class="rounded-2xl border border-dashed border-line px-5 py-10 text-center text-sm text-slate-500">
+        Nenhum cliente encontrado.</div>{% endfor %}
+    </div>
+  </section>
+
+  <section id="servicos" class="mt-14 scroll-mt-8">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-[0.18em] text-sky-400">Catálogo</p>
+      <h2 class="mt-2 text-2xl font-bold">Sistemas disponíveis</h2>
+      <p class="mt-2 text-sm text-slate-400">Cadastre rotas que existam na aplicação; cada destino precisa ter sua
+        própria tela.</p>
+    </div>
+    <form action="{{ url_for('criar_servico') }}" method="post"
+      class="mt-5 grid gap-4 rounded-2xl border border-line bg-panel p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label class="text-xs font-medium text-slate-400">Nome de exibição<input required maxlength="120"
+          name="nome_exibicao" placeholder="Ex.: ERP de vendas"
+          class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white"></label>
+      <label class="text-xs font-medium text-slate-400">Rota de acesso<input required maxlength="255" name="rota_acesso"
+          placeholder="/cliente/erp" pattern="/cliente/.*"
+          class="mt-1 w-full rounded-lg border border-line bg-ink px-3 py-2.5 text-sm text-white"></label>
+      <button class="rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold hover:bg-blue-400">Adicionar
+        sistema</button>
+    </form>
+    {% if servicos %}<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{% for servico in servicos %}<div
+        class="flex items-center justify-between rounded-xl border border-line bg-panel px-4 py-3"><span
+          class="font-medium">{{ servico.nome_exibicao }}</span><code
+          class="text-xs text-sky-300">{{ servico.rota_acesso }}</code></div>{% endfor %}</div>{% else %}<p
+      class="mt-4 rounded-xl border border-dashed border-line px-4 py-6 text-center text-sm text-slate-500">Nenhum
+      sistema cadastrado.</p>{% endif %}
+  </section>
+</section>
+{% endblock %}

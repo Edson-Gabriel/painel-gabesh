@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Meu portal | GabeSH.dev{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+  <div class="flex flex-col justify-between gap-4 border-b border-line pb-7 sm:flex-row sm:items-end">
+    <div>
+      <p class="text-sm font-semibold text-blue-500">Portal do cliente</p>
+      <h1 class="mt-2 text-3xl font-bold">Olá, {{ current_user.nome_ou_razao }}.</h1>
+      <p class="mt-2 text-slate-400">Acompanhe seu projeto e acesse suas soluções contratadas.</p>
+    </div>
+    <span
+      class="w-fit rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1.5 text-sm font-medium text-sky-200">{{
+      current_user.status_projeto }}</span>
+  </div>
+  <div class="mt-9">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="text-sm font-semibold text-blue-500">Seus sistemas</p>
+        <h2 class="mt-1 text-2xl font-bold">Acessos disponíveis</h2>
+      </div><span class="text-sm text-slate-500">{{ servicos|length }} serviço(s)</span>
+    </div>
+    {% if servicos %}
+    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {% for servico in servicos %}
+      <article class="flex flex-col rounded-xl border border-line bg-panel p-5 transition hover:border-blue-500/50">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-lg text-blue-500">▣</div>
+        <h3 class="mt-4 text-lg font-semibold">{{ servico.nome_exibicao }}</h3>
+        <p class="mt-2 flex-1 text-sm leading-6 text-slate-400">Acesse sua solução em ambiente web.</p><a
+          href="{{ servico.rota_acesso }}"
+          class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500">Abrir
+          sistema <span aria-hidden="true">↗</span></a>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="mt-5 rounded-xl border border-dashed border-line bg-panel px-5 py-10 text-center">
+      <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-lg text-blue-500">⌘
+      </div>
+      <h3 class="mt-4 font-semibold">Nenhum sistema vinculado ainda</h3>
+      <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-400">Quando uma solução for disponibilizada, ela
+        aparecerá aqui. Fale com seu contato GabeSH.dev se precisar de ajuda.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

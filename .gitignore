@@ -1,0 +1,17 @@
+# Ambiente virtual
+Venv/
+
+#Testes
+tests/
+
+# Base de dados local
+instance/
+gabesh.db
+*.db
+
+# Ficheiros compilados do Python
+__pycache__/
+*.pyc
+
+# Ficheiros de ambiente e segurança
+.env

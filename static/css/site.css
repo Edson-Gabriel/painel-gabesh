@@ -1,0 +1,178 @@
+:root {
+  color-scheme: dark;
+  --page: #07111f;
+  --surface: #0d1b2d;
+  --surface-raised: #102747;
+  --stroke: #1d3552;
+  --copy: #f1f5f9;
+  --muted: #94a3b8;
+  --blue: #2563eb;
+}
+
+:root.theme-light {
+  color-scheme: light;
+  --page: #f6f9ff;
+  --surface: #ffffff;
+  --surface-raised: #eff6ff;
+  --stroke: #dbe5f2;
+  --copy: #142338;
+  --muted: #607089;
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background-color: var(--page);
+  color: var(--copy);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition-duration: 160ms;
+}
+
+:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 3px;
+}
+
+.theme-light body {
+  background-color: var(--page);
+  color: var(--copy);
+}
+
+.theme-light header,
+.theme-light footer {
+  border-color: var(--stroke);
+  background-color: rgb(255 255 255 / 94%);
+}
+
+.theme-light [class~="bg-ink"] {
+  background-color: #f8fafc;
+}
+
+.theme-light [class~="bg-panel"],
+.theme-light [class~="bg-panel/50"],
+.theme-light [class~="bg-panel/70"],
+.theme-light [class~="bg-panel/80"] {
+  background-color: var(--surface);
+}
+
+.theme-light [class~="bg-white/[0.02]"],
+.theme-light [class~="bg-white/5"] {
+  background-color: #f1f5f9;
+}
+
+.theme-light [class~="bg-slate-700/60"] {
+  background-color: #e8eef7;
+  color: #334155;
+}
+
+.theme-light [class~="bg-[#091626]"],
+.theme-light [class~="bg-[#102747]"] {
+  background-color: var(--surface-raised);
+}
+
+.theme-light [class~="bg-gradient-to-br"] {
+  background-image: none;
+  background-color: var(--surface-raised);
+}
+
+.theme-light [class~="border-line"],
+.theme-light [class~="border-white/5"] {
+  border-color: var(--stroke);
+}
+
+.theme-light [class~="divide-white/5"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--stroke);
+}
+
+.theme-light .text-slate-100,
+.theme-light .text-slate-200,
+.theme-light .text-slate-300,
+.theme-light .text-white {
+  color: #142338;
+}
+
+.theme-light .text-slate-400,
+.theme-light .text-slate-500 {
+  color: #607089;
+}
+
+.theme-light .text-slate-600 {
+  color: #8391a5;
+}
+
+.theme-light .text-sky-200,
+.theme-light .text-sky-300 {
+  color: #0755b8;
+}
+
+.theme-light .text-emerald-200 {
+  color: #087443;
+}
+
+.theme-light .text-rose-200 {
+  color: #b42335;
+}
+
+.theme-light [class~="bg-blue-500"] {
+  color: #fff;
+}
+
+.theme-light [class~="bg-blue-600"],
+.theme-light [class~="bg-blue-500"] {
+  color: #fff;
+}
+
+.theme-light [class~="bg-blue-600"] *,
+.theme-light [class~="bg-blue-500"] * {
+  color: inherit;
+}
+
+.theme-light .hover\:text-white:hover {
+  color: #0755b8;
+}
+
+.theme-light [class~="bg-emerald-500/10"],
+.theme-light [class~="bg-rose-500/10"],
+.theme-light [class~="bg-sky-400/10"] {
+  color: inherit;
+}
+
+.theme-light input,
+.theme-light select,
+.theme-light textarea {
+  border-color: var(--stroke);
+  background-color: #fff;
+  color: #142338;
+}
+
+.theme-light input::placeholder,
+.theme-light textarea::placeholder {
+  color: #8290a4;
+}
+
+.theme-light option {
+  background: #fff;
+  color: #142338;
+}
+
+.theme-light .flash-message {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
