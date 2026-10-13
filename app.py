@@ -235,7 +235,7 @@ def create_app(test_config=None):
                 flash("Sua conta está desativada. Fale com o suporte.", "error")
                 return render_template("login.html"), 403
                 
-            login_user(usuario)
+            login_user(usuario, remember=True)
             proximo = _destino_local_seguro(request.args.get("next"))
             return redirect(proximo or url_for("admin" if usuario.role == "admin" else "portal"))
             
