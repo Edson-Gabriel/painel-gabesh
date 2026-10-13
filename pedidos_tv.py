@@ -240,7 +240,7 @@ def concluir_pedido(order_id):
         return jsonify({"error": "Pedido não encontrado ou já concluído."}), 404
     
     pedido.status = 'Concluído'
-    pedido.data_hora_conclusao = datetime.now(ZoneInfo("America/Cuiaba")).isoformat(timespec="seconds")
+    pedido.data_hora_conclusao = datetime.now(ZoneInfo("America/Cuiaba")).strftime("%Y-%m-%dT%H:%M:%S")
     db.session.commit()
     socketio.emit('atualizar_pedidos', room=f"room_{current_user.id}")
     return jsonify({"id": order_id, "concluido_em": pedido.data_hora_conclusao})
